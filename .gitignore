@@ -1,2 +1,7 @@
+
+#venv
+crawling/venv/*
+/venv/*
+
 #dependencies
 front/node_module
