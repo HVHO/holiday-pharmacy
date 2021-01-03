@@ -66,7 +66,8 @@ class Parser:
                     continue
 
                 # get search pages number
-                page_anchors = self.driver.find_element(By.XPATH, "//td[@style='padding : 2 0 0 0']").find_elements(By.TAG_NAME, 'a')
+                page_anchors = self.driver.find_element(By.XPATH, "//td[@style='padding : 2 0 0 0']").find_elements(
+                    By.TAG_NAME, 'a')
 
                 for page_idx in range(len(page_anchors) + 1):
 
@@ -74,7 +75,8 @@ class Parser:
                     table_soup = BeautifulSoup(table.get_attribute('outerHTML'), 'html.parser').find('table', attrs={
                         'style': 'TABLE-LAYOUT: fixed'})
 
-                    prev_pharamacy = ["", "", "", "", "", ""]  # name, addr, phone num, type, additional info
+                    prev_pharamacy = ["", "", "", "", "", "",
+                                      ""]  # name, addr, phone num, type, start_time, end_time, additional info
                     for idx, tr in enumerate(table_soup.find_all('tr')):
                         td_array = tr.find_all('td')
                         if len(td_array) == 7:
@@ -84,9 +86,11 @@ class Parser:
                             prev_pharamacy = self.main_row_parser(tr)
                         elif "위치정보" in td_array[0].get_text():
                             prev_pharamacy.append(self.sub_row_parser(tr))
+                    pharmacies.append(prev_pharamacy)
 
                     if page_idx < len(page_anchors):
-                        self.driver.find_element(By.XPATH, "//td[@style='padding : 2 0 0 0']").find_elements(By.TAG_NAME,'a')[page_idx].click()
+                        self.driver.find_element(By.XPATH, "//td[@style='padding : 2 0 0 0']").find_elements(
+                            By.TAG_NAME, 'a')[page_idx].click()
 
                 # back to search menu
                 self.go_to_search_menu()
@@ -109,10 +113,17 @@ class Parser:
         phone_num = regex.sub('', td_array[3].get_text())
         # parse pharmacy available time
         available_time = regex.sub('', td_array[4].get_text())
+        (start_time, end_time) = available_time.split('~')
+        start_time = start_time.strip()
+        end_time = end_time.strip()
+        if "익일" in end_time:
+            hour = format(int(list(end_time)[2]) * 10 + int(list(end_time)[3]) + 24, '02d')
+            minute = format(int(list(end_time)[5]) * 10 + int(list(end_time)[6]), '02d')
+            end_time = str(hour) + ":" + str(minute)
         # parse pharmacy type
         parm_type = regex.sub('', td_array[5].get_text())
 
-        return [name, addr, phone_num, available_time, parm_type]
+        return [name, addr, phone_num, start_time, end_time, parm_type]
 
     # parse sub row
     def sub_row_parser(self, table_row):
@@ -142,7 +153,6 @@ class Parser:
         addr2_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr2")
         Select(addr1_pull_down_menu).select_by_visible_text(addr1)
         Select(addr2_pull_down_menu).select_by_visible_text(addr2)
-
 
     def finish(self):
         self.driver.quit()

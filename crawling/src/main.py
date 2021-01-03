@@ -19,7 +19,10 @@ def main():
     print("=====================================================================")
     parser = Parser(CHROME_HEAD_LESS_MODE)
 
-    parser.parse(query_year, query_month, query_day)
+    pharmacies = parser.parse(query_year, query_month, query_day)
+
+
+
 
 
 main()
