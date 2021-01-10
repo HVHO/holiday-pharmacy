@@ -1,0 +1,6 @@
+{
+  "database_host": "holiday-pharmacy.cnpaxuzgobzt.ap-northeast-2.rds.amazonaws.com",
+  "database_name": "pharmacy",
+  "database_user": "admin",
+  "database_pass": "hvho9bmp4u"
+}

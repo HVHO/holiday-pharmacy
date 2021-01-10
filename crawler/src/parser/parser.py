@@ -40,7 +40,7 @@ class Parser:
         addr1_list = list(filter(lambda x: x != '', [x.get_attribute("value") for x in
                                                      addr1_pull_down_menu.find_elements_by_tag_name("option")]))
 
-        # output = open("/Users/HVHO/workspace/study/crawling/data.txt", 'w')
+        # output = open("/Users/HVHO/workspace/study/crawler/data.txt", 'w')
         result = []
         for addr1 in addr1_list:
             addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")

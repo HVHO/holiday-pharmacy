@@ -1,9 +1,9 @@
 import os
 import time
 from datetime import datetime
-from crawling.config.config import config
-from crawling.src.db.db_client import DbClient
-from crawling.src.parser.parser import Parser
+from crawler.config.config import config
+from crawler.src.db.db_client import DbClient
+from crawler.src.parser.parser import Parser
 
 # options
 CHROME_HEAD_LESS_MODE = True

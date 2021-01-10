@@ -1,6 +1,6 @@
 
 #venv
-crawling/venv/*
+crawler/venv/*
 /venv/*
 
 #dependencies
