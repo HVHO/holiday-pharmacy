@@ -5,3 +5,9 @@ crawling/venv/*
 
 #dependencies
 front/node_module
+
+#configuration
+crawling/config/*.json
+
+#temp file
+*.pyc

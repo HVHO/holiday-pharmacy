@@ -1,3 +1,5 @@
+import time
+import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,10 +23,14 @@ class Parser:
             self.driver = webdriver.Chrome("/Users/HVHO/Downloads/chromedriver")
 
     def parse(self, year, month, day):
+
         # wait until driver load
         self.driver.implicitly_wait(3)
         self.driver.get('https://www.pharm114.or.kr/')
-
+        try:
+            self.driver.switch_to.alert.accept()
+        except:
+            print("accept alert")
         # get into search menu
         self.go_to_search_menu()
 
@@ -78,7 +84,11 @@ class Parser:
                     prev_pharamacy = ["", "", "", "", "", "",
                                       ""]  # name, addr, phone num, type, start_time, end_time, additional info
                     for idx, tr in enumerate(table_soup.find_all('tr')):
+                        if tr.has_attr("style") and tr["style"] == "display:none":
+                            continue
+
                         td_array = tr.find_all('td')
+
                         if len(td_array) == 7:
                             if prev_pharamacy[0] != "":
                                 pharmacies.append(prev_pharamacy)
@@ -96,9 +106,6 @@ class Parser:
                 self.go_to_search_menu()
 
         sleep(3)
-        print("=============================Query End===============================")
-        print("whole parsed pharmacy num: " + str(len(pharmacies)))
-        print("=====================================================================")
         return pharmacies
 
     ## parse main row
