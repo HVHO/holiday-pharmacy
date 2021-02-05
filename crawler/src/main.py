@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from crawler.config.config import config
 from crawler.src.db.db_client import DbClient
+from crawler.src.map_client.kakao_map_client import KakaoMapClient
 from crawler.src.parser.parser import Parser
 
 # options
@@ -31,6 +32,19 @@ def main():
     print("|  time taken: ", str(datetime.now() - query_start_time).split(".")[0])
     print("=====================================================================")
 
+
+    search_start_time = datetime.now()
+    print("======================Map api request start==========================")
+    print("=====================================================================")
+
+    map_client = KakaoMapClient()
+    searched_pharmacies = map_client.get_latitude_and_longitudes(pharmacies)
+
+    print("======================Map api request End============================")
+    print("|  whole parsed pharmacy num: " + str(len(searched_pharmacies)))
+    print("|  time taken: ", str(datetime.now() - search_start_time).split(".")[0])
+    print("=====================================================================")
+
     # load db config
     db_config = config()
     db_start_time = datetime.now()
@@ -43,7 +57,7 @@ def main():
 
     # insert to db
     db_client = DbClient(db_config["host"], db_config["name"], db_config["user"], db_config["pass"])
-    db_client.insert(pharmacies)
+    db_client.insert(searched_pharmacies)
     db_client.finish()
 
     print("==========================DB insert End==============================")

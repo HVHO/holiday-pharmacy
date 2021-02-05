@@ -7,7 +7,7 @@ crawler/venv/*
 front/node_module
 
 #configuration
-crawling/config/*.json
+crawler/config/*.json
 
 #temp file
 *.pyc

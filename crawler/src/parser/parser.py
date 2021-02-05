@@ -18,9 +18,9 @@ class Parser:
             options.add_argument('window-size=1920x1080')
             options.add_argument("disable-gpu")
             # todo : replace chromedriver location by environment variable
-            self.driver = webdriver.Chrome("/Users/HVHO/Downloads/chromedriver", chrome_options=options)
+            self.driver = webdriver.Chrome("/Users/terry/workspace/study/holiday-pharmacy/crawler/chrome-driver/chromedriver", chrome_options=options)
         else:
-            self.driver = webdriver.Chrome("/Users/HVHO/Downloads/chromedriver")
+            self.driver = webdriver.Chrome("/Users/terry/workspace/study/holiday-pharmacy/crawler/chrome-driver/chromedriver")
 
     def parse(self, year, month, day):
 
@@ -39,8 +39,8 @@ class Parser:
         addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")
         addr1_list = list(filter(lambda x: x != '', [x.get_attribute("value") for x in
                                                      addr1_pull_down_menu.find_elements_by_tag_name("option")]))
-
-        # output = open("/Users/HVHO/workspace/study/crawler/data.txt", 'w')
+        # addr1_list = ["대구광역시"]
+       # output = open("/Users/HVHO/workspace/study/crawler/data.txt", 'w')
         result = []
         for addr1 in addr1_list:
             addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")

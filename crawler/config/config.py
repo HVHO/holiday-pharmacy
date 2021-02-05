@@ -5,7 +5,7 @@ import os
 def config():
     PYTHON_ENV = os.getenv("PYTHON_ENV", default="DEV")
     if PYTHON_ENV == "DEV":
-        with open("/crawler/config/config-dev.json") as f:
+        with open("/Users/terry/workspace/study/holiday-pharmacy/crawler/config/config-dev.json") as f:
             config = json.load(f)
             host = config["database_host"]
             name = config["database_name"]
