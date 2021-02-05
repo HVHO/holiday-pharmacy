@@ -1,7 +1,8 @@
 import requests
 class KakaoMapClient:
-    def __init__(self):
+    def __init__(self, kakao_auth_key):
         self.kakao_map_url = "https://dapi.kakao.com/v2/local/search/address.json"
+        self.kakao_auth_key = kakao_auth_key
 
     def get_latitude_and_longitudes(self, pharmacies):
         searched_pharamacies = []
@@ -30,7 +31,7 @@ class KakaoMapClient:
         }
 
         auth_header = {
-            'Authorization': 'KakaoAK ' + 'bd90571519a564f9fdd75a7a001ce148'
+            'Authorization':  self.kakao_auth_key
         }
 
         response = requests.get(self.kakao_map_url, params=query_pharams, headers=auth_header)

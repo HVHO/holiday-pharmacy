@@ -1,13 +1,13 @@
 
-#venv
-crawler/venv/*
-/venv/*
+# tmp files
+.idea/*
+venv/*
+chrome-driver
+*.pyc
 
-#dependencies
+# front dependencies
 front/node_module
 
-#configuration
+# configuration
 crawler/config/*.json
 
-#temp file
-*.pyc

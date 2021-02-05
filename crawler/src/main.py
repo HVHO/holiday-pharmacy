@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime
-from crawler.config.config import config
+from crawler.config.config import load_config
 from crawler.src.db.db_client import DbClient
 from crawler.src.map_client.kakao_map_client import KakaoMapClient
 from crawler.src.parser.parser import Parser
@@ -11,6 +11,9 @@ CHROME_HEAD_LESS_MODE = True
 
 
 def main():
+    # load config
+    config = load_config()
+
     # parse today's holiday pharmacy
     query_year = str(datetime.today().year)
     query_month = str(datetime.today().month)
@@ -37,7 +40,7 @@ def main():
     print("======================Map api request start==========================")
     print("=====================================================================")
 
-    map_client = KakaoMapClient()
+    map_client = KakaoMapClient(config["kakao_auth_key"])
     searched_pharmacies = map_client.get_latitude_and_longitudes(pharmacies)
 
     print("======================Map api request End============================")
@@ -46,17 +49,17 @@ def main():
     print("=====================================================================")
 
     # load db config
-    db_config = config()
+
     db_start_time = datetime.now()
 
     print("==========================DB insert Start============================")
-    print("| db host: " + db_config["host"])
-    print("| db user: " + db_config["user"])
-    print("| db table: " + db_config["name"])
+    print("| db host: " + config["host"])
+    print("| db user: " + config["user"])
+    print("| db table: " + config["name"])
     print("=====================================================================")
 
     # insert to db
-    db_client = DbClient(db_config["host"], db_config["name"], db_config["user"], db_config["pass"])
+    db_client = DbClient(config["host"], config["name"], config["user"], config["pass"])
     db_client.insert(searched_pharmacies)
     db_client.finish()
 
