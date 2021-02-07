@@ -1,8 +1,6 @@
 from datetime import datetime
 
 import pymysql
-import os
-
 
 class DbClient:
     insert_query_with_additional_info = 'INSERT INTO pharmacies (date, name, addr, open_time, close_time, latitude, longitude, additional_info) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'

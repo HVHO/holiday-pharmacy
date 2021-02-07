@@ -1,7 +1,5 @@
-import os
-import time
 from datetime import datetime
-from crawler.config.config import load_config
+from crawler.src.config.config import load_config
 from crawler.src.db.db_client import DbClient
 from crawler.src.map_client.kakao_map_client import KakaoMapClient
 from crawler.src.parser.parser import Parser
@@ -10,9 +8,11 @@ from crawler.src.parser.parser import Parser
 CHROME_HEAD_LESS_MODE = True
 
 
-def main():
+def handler(event, context):
     # load config
     config = load_config()
+
+    handler_start_time = datetime.now()
 
     # parse today's holiday pharmacy
     query_year = str(datetime.today().year)
@@ -26,7 +26,6 @@ def main():
     print("|  day : " + query_day)
     print("=====================================================================")
 
-
     parser = Parser(CHROME_HEAD_LESS_MODE)
     pharmacies = parser.parse(query_year, query_month, query_day)
 
@@ -34,7 +33,6 @@ def main():
     print("|  whole parsed pharmacy num: " + str(len(pharmacies)))
     print("|  time taken: ", str(datetime.now() - query_start_time).split(".")[0])
     print("=====================================================================")
-
 
     search_start_time = datetime.now()
     print("======================Map api request start==========================")
@@ -67,6 +65,13 @@ def main():
     print("|  time taken: ", str(datetime.now() - db_start_time).split(".")[0])
     print("=====================================================================")
 
+    print("==========================Crawling End==============================")
+    print("|  whole time taken: ", str(datetime.now() - handler_start_time).split(".")[0])
+    print("=====================================================================")
 
+    return {'status': 200,
+            'parsed_count': len(searched_pharmacies),
+            'time_taken': str(datetime.now() - handler_start_time).split(".")[0]
+            }
 
-main()
+handler("", "")
