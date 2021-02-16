@@ -1,6 +1,4 @@
 import os
-import time
-import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -13,30 +11,36 @@ import re
 class Parser:
     # constructor
     def __init__(self, is_head_less=False):
-        options = Options()
+
         if os.getenv("PYTHON_ENV") == "PRD":
-            options.add_argument('--headless')
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--window-size=1280x1696')
-            options.add_argument('--user-data-dir=/tmp/user-data')
-            options.add_argument('--hide-scrollbars')
-            options.add_argument('--enable-logging')
-            options.add_argument('--log-level=0')
-            options.add_argument('--v=99')
-            options.add_argument('--single-process')
-            options.add_argument('--data-path=/tmp/data-path')
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--homedir=/tmp')
-            options.add_argument('--disk-cache-dir=/tmp/cache-dir')
-            options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-            options.binary_location = '/opt/python/bin/headless-chromium'
-            self.driver = webdriver.Chrome('/opt/python/bin/chromedriver', chrome_options=options)
+            chrome_options = Options()
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('--window-size=1280x1696')
+            chrome_options.add_argument('--user-data-dir=/tmp/user-data')
+            chrome_options.add_argument('--hide-scrollbars')
+            chrome_options.add_argument('--enable-logging')
+            chrome_options.add_argument('--log-level=0')
+            chrome_options.add_argument('--v=99')
+            chrome_options.add_argument('--single-process')
+            chrome_options.add_argument('--data-path=/tmp/data-path')
+            chrome_options.add_argument('--ignore-certificate-errors')
+            chrome_options.add_argument('--homedir=/tmp')
+            chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
+            chrome_options.add_argument(
+                'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
+            chrome_options.binary_location = '/opt/python/bin/headless-chromium'
+
+            self.driver = webdriver.Chrome('/opt/python/bin/chromedriver', chrome_options=chrome_options)
         else:
             if is_head_less:
-                options.add_argument('headless')
-                options.add_argument('window-size=1920x1080')
-                options.add_argument("disable-gpu")
+                options = Options()
+                options.add_argument('--headless')
+                options.add_argument('--window-size=1920x1080')
+                options.add_argument(
+                    'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
+                options.add_argument('--disable-gpu')
                 self.driver = webdriver.Chrome("/Users/terry/workspace/study/holiday-pharmacy/crawler/chrome-driver/chromedriver", chrome_options=options)
             else:
                 self.driver = webdriver.Chrome("/Users/terry/workspace/study/holiday-pharmacy/crawler/chrome-driver/chromedriver")
@@ -45,7 +49,8 @@ class Parser:
 
         # wait until driver load
         self.driver.implicitly_wait(3)
-        self.driver.get('https://www.pharm114.or.kr/')
+        self.driver.get('https://www.pharm114.or.kr/main.asp')
+        self.driver.implicitly_wait(10)
         try:
             self.driver.switch_to.alert.accept()
         except:
@@ -55,19 +60,16 @@ class Parser:
 
         pharmacies = []
 
-        addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")
-        addr1_list = list(filter(lambda x: x != '', [x.get_attribute("value") for x in
-                                                     addr1_pull_down_menu.find_elements_by_tag_name("option")]))
-        # addr1_list = ["대구광역시"]
-       # output = open("/Users/HVHO/workspace/study/crawler/data.txt", 'w')
-        result = []
+        # addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")
+        # addr1_list = list(filter(lambda x: x != '', [x.get_attribute("value") for x in
+        #                                              addr1_pull_down_menu.find_elements_by_tag_name("option")]))
+        addr1_list = ["서울특별시", "경기도"]
         for addr1 in addr1_list:
             addr1_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr1")
             Select(addr1_pull_down_menu).select_by_value(addr1)
             addr2_pull_down_menu = self.driver.find_element(By.ID, "search2").find_element(By.NAME, "addr2")
             addr2_list = list(filter(lambda x: x != '', [x.get_attribute("value") for x in
                                                          addr2_pull_down_menu.find_elements_by_tag_name("option")]))
-
             for addr2 in addr2_list:
 
                 # fill the date query
@@ -111,7 +113,6 @@ class Parser:
                         if len(td_array) == 7:
                             if prev_pharamacy[0] != "":
                                 pharmacies.append(prev_pharamacy)
-                                print(prev_pharamacy)
                             prev_pharamacy = self.main_row_parser(tr)
                         elif "위치정보" in td_array[0].get_text():
                             prev_pharamacy.append(self.sub_row_parser(tr))

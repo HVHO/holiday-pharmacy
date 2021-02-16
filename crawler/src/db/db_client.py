@@ -21,7 +21,6 @@ class DbClient:
     # insert
     def insert(self, columns):
         for column in columns:
-            print("insert column: " + " ".join(column))
             if check_col_with_additional_info(column):
                 self.insert_with_additional_info(column)
             else:

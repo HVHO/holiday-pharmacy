@@ -4,13 +4,14 @@ from crawler.src.db.db_client import DbClient
 from crawler.src.map_client.kakao_map_client import KakaoMapClient
 from crawler.src.parser.parser import Parser
 
+
 # options
-CHROME_HEAD_LESS_MODE = True
 
-
-def handler(event, context):
+def main(event, context):
     # load config
     config = load_config()
+
+    CHROME_HEAD_LESS_MODE = True
 
     handler_start_time = datetime.now()
 
@@ -74,4 +75,4 @@ def handler(event, context):
             'time_taken': str(datetime.now() - handler_start_time).split(".")[0]
             }
 
-handler("", "")
+
